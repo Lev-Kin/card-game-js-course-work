@@ -77,8 +77,6 @@ const flipBackCards = () => {
     document.querySelectorAll('.card:not(.matched)').forEach(card => {
         card.classList.remove('flipped');
     })
-
-    state.flippedCards = 0;
 }
 
 const flipCard = card => {
@@ -91,21 +89,30 @@ const flipCard = card => {
 
     if (state.flippedCards <= 2) {
         card.classList.add('flipped');
-    }
-
-    if (state.flippedCards === 2) {
         const flippedCards = document.querySelectorAll('.flipped:not(.matched)');
 
-        if (flippedCards[0].innerText === flippedCards[1].innerText) {
-            flippedCards[0].classList.add('matched');
-            flippedCards[1].classList.add('matched');
-            flippedCards[0].style.cssText = "visibility: hidden;";
-            flippedCards[1].style.cssText = "visibility: hidden;";
-        }
+        if (flippedCards.length === 2) {
+            if (flippedCards[0].innerText === flippedCards[1].innerText) {
 
+                flippedCards[0].classList.add('matched');
+                flippedCards[1].classList.add('matched');
+
+                setTimeout(() => {
+                    flippedCards[0].style.cssText = "visibility: hidden;";
+                    flippedCards[1].style.cssText = "visibility: hidden;";
+                }, 1000);
+
+                state.flippedCards = 0;
+            }
+        }
+    }
+
+    if (state.flippedCards === 3) {
         setTimeout(() => {
             flipBackCards();
-        }, 1000);
+            card.classList.add('flipped');
+            state.flippedCards = 1;
+        }, 500);
     }
 
     if (!document.querySelectorAll('.card:not(.flipped)').length) {
@@ -120,7 +127,10 @@ const flipCard = card => {
             `;
 
             clearInterval(state.loop);
-        }, 1000);
+        }, 500);
+
+        selectors.start.style = "color: red;";
+        selectors.start.addEventListener('click', restart);
     }
 }
 
@@ -134,7 +144,11 @@ const attachEventListeners = () => {
         } else if (eventTarget.nodeName === 'BUTTON' && !eventTarget.className.includes('disabled')) {
             startGame();
         }
-    })
+    });
+}
+
+function restart() {
+    window.location.reload();
 }
 
 generateGame();
