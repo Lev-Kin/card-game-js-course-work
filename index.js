@@ -112,7 +112,7 @@ const flipCard = card => {
             flipBackCards();
             card.classList.add('flipped');
             state.flippedCards = 1;
-        }, 500);
+        }, 1000);
     }
 
     if (!document.querySelectorAll('.card:not(.flipped)').length) {
@@ -127,7 +127,7 @@ const flipCard = card => {
             `;
 
             clearInterval(state.loop);
-        }, 500);
+        }, 1000);
 
         selectors.start.style = "color: red;";
         selectors.start.addEventListener('click', restart);
