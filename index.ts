@@ -1,68 +1,68 @@
 const selectors = {
-    boardContainer: document.querySelector('.board-container'),
-    board: document.querySelector('.board'),
-    moves: document.querySelector('.moves'),
-    timer: document.querySelector('.timer'),
-    start: document.querySelector('button'),
-    win: document.querySelector('.win')
-}
+    boardContainer: document.querySelector('.board-container') as HTMLDivElement,
+    board: document.querySelector('.board') as HTMLDivElement,
+    moves: document.querySelector('.moves') as HTMLDivElement,
+    timer: document.querySelector('.timer') as HTMLDivElement,
+    start: document.querySelector('button') as HTMLButtonElement,
+    win: document.querySelector('.win') as HTMLDivElement
+};
 
 const state = {
     gameStarted: false,
     flippedCards: 0,
     totalFlips: 0,
     totalTime: 0,
-    loop: null
-}
+    loop: 0
+};
 
-const pickRandom = (array, items) => {
-    const clonedArray = [...array];
-    const randomPicks = [];
+const pickRandom = (array: [...string[]], items: number): string[] => {
+    const clonedArray: [...string[]] = [...array];
+    const randomPicks: [...string[]] = [];
 
-    for (let index = 0; index < items; index++) {
-        const randomIndex = Math.floor(Math.random() * clonedArray.length);
+    for (let index: number = 0; index < items; index++) {
+        const randomIndex: number = Math.floor(Math.random() * clonedArray.length);
         randomPicks.push(clonedArray[randomIndex]);
         clonedArray.splice(randomIndex, 1);
     }
 
     return randomPicks;
-}
+};
 
-const shuffle = array => {
-    const clonedArray = [...array];
+const shuffle = (array: [...string[]]): string[] => {
+    const clonedArray: [...string[]] = [...array];
 
-    for (let index = clonedArray.length - 1; index > 0; index--) {
-        const randomIndex = Math.floor(Math.random() * (index + 1));
-        const original = clonedArray[index];
+    for (let index: number = clonedArray.length - 1; index > 0; index--) {
+        const randomIndex: number = Math.floor(Math.random() * (index + 1));
+        const original: string = clonedArray[index];
 
         clonedArray[index] = clonedArray[randomIndex];
         clonedArray[randomIndex] = original;
     }
 
     return clonedArray;
-}
+};
 
-const generateGame = () => {
-    const dimensions = selectors.board.getAttribute('data-dimension');
+const generateGame = (): void => {
+    const dimensions: any = selectors.board.getAttribute('data-dimension');
     const emojis = ['🍄', '🍇', '🍈', '🍉', '🍊', '🍋', '🍌', '🍍', '🥭', '🍎', '🍏', '🍐', '🍑', '🍒', '🍓', '🥝'];
     const picks = pickRandom(emojis, (dimensions * 4) / 2);
     const items = shuffle([...picks, ...picks]);
     const cards = `
-        <div class="board" style="grid-template-columns: repeat(${dimensions}, auto)">
-            ${items.map(item => `
-                <div class="card">
-                    <div class="card-front"></div>
-                    <div class="card-back">${item}</div>
-                </div>
-            `).join('')}
-       </div>
-    `;
+            <div class="board" style="grid-template-columns: repeat(${dimensions}, auto)">
+                ${items.map(item => `
+                    <div class="card">
+                        <div class="card-front"></div>
+                        <div class="card-back">${item}</div>
+                    </div>
+                `).join('')}
+           </div>
+        `;
 
-    const parser = new DOMParser().parseFromString(cards, 'text/html');
-    selectors.board.replaceWith(parser.querySelector('.board'));
+    const parser: Document = new DOMParser().parseFromString(cards, 'text/html');
+    selectors.board.replaceWith(parser.querySelector('.board') as HTMLDivElement);
 }
 
-const startGame = () => {
+const startGame = (): void => {
     state.gameStarted = true;
     selectors.start.classList.add('disabled');
 
@@ -73,13 +73,13 @@ const startGame = () => {
     }, 1000)
 }
 
-const flipBackCards = () => {
+const flipBackCards = (): void => {
     document.querySelectorAll('.card:not(.matched)').forEach(card => {
         card.classList.remove('flipped');
     })
 }
 
-const flipCard = card => {
+const flipCard = (card: HTMLElement): void => {
     state.flippedCards++;
     state.totalFlips++;
 
@@ -89,7 +89,7 @@ const flipCard = card => {
 
     if (state.flippedCards <= 2) {
         card.classList.add('flipped');
-        const flippedCards = document.querySelectorAll('.flipped:not(.matched)');
+        const flippedCards: NodeListOf<HTMLElement> = document.querySelectorAll('.flipped:not(.matched)');
 
         if (flippedCards.length === 2) {
             if (flippedCards[0].innerText === flippedCards[1].innerText) {
@@ -119,25 +119,25 @@ const flipCard = card => {
         setTimeout(() => {
             selectors.boardContainer.classList.add('flipped');
             selectors.win.innerHTML = `
-                <span class="win-text">
-                    You won!<br />
-                    with <span class="highlight">${state.totalFlips}</span> moves<br />
-                    under <span class="highlight">${state.totalTime}</span> seconds
-                </span>
-            `;
+                    <span class="win-text">
+                        You won!<br />
+                        with <span class="highlight">${state.totalFlips}</span> moves<br />
+                        under <span class="highlight">${state.totalTime}</span> seconds
+                    </span>
+                `;
 
             clearInterval(state.loop);
         }, 1000);
 
-        selectors.start.style = "color: red;";
+        selectors.start.setAttribute('style', "color: red;");
         selectors.start.addEventListener('click', restart);
     }
 }
 
-const attachEventListeners = () => {
-    document.addEventListener('click', event => {
-        const eventTarget = event.target;
-        const eventParent = eventTarget.parentElement;
+const attachEventListeners = (): void => {
+    document.addEventListener('click', (event: Event) => {
+        const eventTarget = event.target as HTMLElement;
+        const eventParent = eventTarget.parentElement as HTMLElement;
 
         if (eventTarget.className.includes('card') && !eventParent.className.includes('flipped')) {
             flipCard(eventParent);
@@ -147,7 +147,7 @@ const attachEventListeners = () => {
     });
 }
 
-function restart() {
+function restart(): void {
     window.location.reload();
 }
 
