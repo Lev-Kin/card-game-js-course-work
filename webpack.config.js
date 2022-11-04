@@ -1,12 +1,17 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 let mode = 'development';
 let target = 'web';
 if (process.env.NODE_ENV === 'production') {
     mode = 'production';
     target = 'browserslist';
+}
+
+if (process.env.SERVE === 'true webpack serve') {
+    plugins.push(new ReactRefreshWebpackPlugin());
 }
 
 const plugins = [
