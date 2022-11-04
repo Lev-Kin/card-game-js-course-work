@@ -66,11 +66,11 @@ const startGame = (): void => {
     state.gameStarted = true;
     selectors.start.classList.add('disabled');
 
-    state.loop = setInterval(() => {
+    state.loop = window.setInterval(() => {
         state.totalTime++;
         selectors.moves.innerText = `${state.totalFlips} moves`;
         selectors.timer.innerText = `time: ${state.totalTime} sec`;
-    }, 1000)
+    }, 1000);
 }
 
 const flipBackCards = (): void => {
